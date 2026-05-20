@@ -1,6 +1,7 @@
 
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useState } from "react";
+import { FlatList } from 'react-native';
 import { StatusBar } from "expo-status-bar";
 import {
   widthPercentageToDP as wp,
@@ -8,6 +9,7 @@ import {
 } from "react-native-responsive-screen";
 import Categories from "../components/categories";
 import FoodItems from "../components/recipes";
+
 
 export default function HomeScreen() {
   const [activeCategory, setActiveCategory] = useState("Chicken");
@@ -728,13 +730,46 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        <View testID="categoryList">
-       
+        <FlatList
+  data={categories}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  keyExtractor={(item) => item.idCategory}
+  contentContainerStyle={{ paddingHorizontal: 15 }}
+  renderItem={({ item }) => {
+    const isActive = item.strCategory === activeCategory;
+    const activeButtonStyle = isActive
+      ? { backgroundColor: '#fbbf24' }
+      : { backgroundColor: 'rgba(0,0,0,0.1)' };
+
+    return (
+      <TouchableOpacity
+        onPress={() => handleChangeCategory(item.strCategory)}
+        style={{ alignItems: 'center', marginRight: 16 }}
+      >
+        <View style={[{ borderRadius: 9999, padding: 6 }, activeButtonStyle]}>
+          <Image
+            source={{ uri: item.strCategoryThumb }}
+            style={{ width: 45, height: 45, borderRadius: 9999 }}
+          />
         </View>
+        <Text style={{ fontSize: 12, color: '#525252', marginTop: 4 }}>
+          {item.strCategory}
+        </Text>
+      </TouchableOpacity>
+    );
+  }}
+/>
 
-        <View testID="foodList">
 
-          </View>
+
+
+<View testID="foodList">
+  <FoodItems foods={allFood} categories={categories} />
+</View>
+
+
+
       </ScrollView>
     </View>
   );

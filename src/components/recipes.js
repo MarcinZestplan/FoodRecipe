@@ -13,7 +13,28 @@ export default function Recipe({ categories, foods }) {
   return (
     <View style={styles.container}>
       <View testID="recipesDisplay">
-            
+               <FlatList
+        data={foods}
+        numColumns={2}
+        keyExtractor={(item) => item.idFood}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={{ width: '48%', marginBottom: 12 }}>
+            <Image
+              source={{ uri: item.recipeImage }}
+              style={{ width: '100%', height: 150, borderRadius: 12 }}
+            />
+            <Text style={{ marginTop: 6, fontSize: 14, fontWeight: '500' }}>
+              {item.recipeName.length > 20
+                ? item.recipeName.slice(0, 20) + '...'
+                : item.recipeName}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />   
+
+
       </View>
     </View>
   );
