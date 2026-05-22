@@ -7,34 +7,20 @@ export default function Recipe({ categories, foods }) {
   const navigation = useNavigation();
 
   const renderItem = ({ item, index }) => (
-<ArticleCard item={item} index={index} navigation={navigation} />
+    <ArticleCard item={item} index={index} navigation={navigation} />
   );
 
   return (
     <View style={styles.container}>
       <View testID="recipesDisplay">
-               <FlatList
-        data={foods}
-        numColumns={2}
-        keyExtractor={(item) => item.idFood}
-        showsVerticalScrollIndicator={false}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={{ width: '48%', marginBottom: 12 }}>
-            <Image
-              source={{ uri: item.recipeImage }}
-              style={{ width: '100%', height: 150, borderRadius: 12 }}
-            />
-            <Text style={{ marginTop: 6, fontSize: 14, fontWeight: '500' }}>
-              {item.recipeName.length > 20
-                ? item.recipeName.slice(0, 20) + '...'
-                : item.recipeName}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />   
-
-
+        <FlatList
+          data={foods}
+          numColumns={2}
+          keyExtractor={(item) => item.idFood}
+          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          renderItem={renderItem}
+        />
       </View>
     </View>
   );
@@ -43,22 +29,43 @@ export default function Recipe({ categories, foods }) {
 const ArticleCard = ({ item, index, navigation }) => {
   return (
     <View
-      style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15}]} testID="articleDisplay"
+      style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15 }]}
+      testID="articleDisplay"
     >
-   
+      <TouchableOpacity
+        onPress={() => navigation.navigate("RecipeDetail", { ...item })}
+        activeOpacity={0.7}
+      >
+        <Image
+          source={{ uri: item.recipeImage }}
+          style={styles.articleImage}
+        />
+        <Text style={styles.articleText}>
+          {item.recipeName.length > 20
+            ? item.recipeName.slice(0, 20) + "..."
+            : item.recipeName}
+        </Text>
+        <Text style={styles.articleDescription}>
+          {item.recipeDescription
+            ? item.recipeDescription.length > 40
+              ? item.recipeDescription.slice(0, 40) + "..."
+              : item.recipeDescription
+            : ""}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: wp(4), // mx-4 equivalent
+    marginHorizontal: wp(4),
     marginTop: hp(2),
   },
   title: {
     fontSize: hp(3),
-    fontWeight: "600", // font-semibold
-    color: "#52525B", // text-neutral-600
+    fontWeight: "600",
+    color: "#52525B",
     marginBottom: hp(1.5),
   },
   loading: {
@@ -67,28 +74,28 @@ const styles = StyleSheet.create({
   cardContainer: {
     justifyContent: "center",
     marginBottom: hp(1.5),
-    flex: 1, // Allows cards to grow and fill space evenly
+    flex: 1,
   },
   articleImage: {
     width: "100%",
-   
+    height: hp(20),
     borderRadius: 35,
-    backgroundColor: "rgba(0, 0, 0, 0.05)", // bg-black/5
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
   },
   articleText: {
     fontSize: hp(1.5),
-    fontWeight: "600", // font-semibold
-    color: "#52525B", // text-neutral-600
+    fontWeight: "600",
+    color: "#52525B",
     marginLeft: wp(2),
     marginTop: hp(0.5),
   },
   articleDescription: {
     fontSize: hp(1.2),
-    color: "#6B7280", // gray-500
+    color: "#6B7280",
     marginLeft: wp(2),
     marginTop: hp(0.5),
   },
   row: {
-    justifyContent: "space-between", // Align columns evenly
+    justifyContent: "space-between",
   },
 });
