@@ -20,48 +20,53 @@ import {
     const dispatch = useDispatch();
   
     const route = useRoute();
-    const { recipe } = route.params || {}; // Pass the  object as a parameter
-    console.log('recipe',recipe);
-    
+    const { recipe } = route.params || {};
+  
     const favoriteRecipe = useSelector(
       (state) => state.favorites.favoriterecipes
     );
-    console.log('favoriteRecipe from custom',favoriteRecipe);
-    
-    const isFavourite = favoriteRecipe.includes(recipe.idCategory); // Adjust this according to your recipe structure
+  
+    // Fixed: compare by title since custom recipes don't have idFood
+    const isFavourite = favoriteRecipe.some(
+      (fav) => fav.title === recipe?.title
+    );
   
     if (!recipe) {
       return (
         <View style={styles.container}>
-          <Text style={styles.title}>No Recipe Details Available</Text>
+          <Text style={styles.recipeTitle}>No Recipe Details Available</Text>
         </View>
       );
     }
   
     const handleToggleFavorite = () => {
-      dispatch(toggleFavorite(recipe)); // Adjust the action to handle recipe
+      dispatch(toggleFavorite(recipe));
     };
   
     return (
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent} testID="scrollContent"
+        contentContainerStyle={styles.scrollContent}
+        testID="scrollContent"
       >
         {/* Recipe Image */}
         <View style={styles.imageContainer} testID="imageContainer">
-        {recipe.image && (
-            <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+          {recipe.image && (
+            <Image
+              source={{ uri: recipe.image }}
+              style={styles.recipeImage}
+            />
           )}
         </View>
-        <View
-          style={styles.topButtonsContainer} testID="topButtonsContainer"
-        >
+  
+        {/* Back & Favorite Buttons */}
+        <View style={styles.topButtonsContainer} testID="topButtonsContainer">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Text>Back</Text>
+            <Text>GoBack</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleToggleFavorite}
@@ -73,12 +78,13 @@ import {
   
         {/* Recipe Details */}
         <View style={styles.contentContainer} testID="contentContainer">
-        <Text style={styles.recipeTitle}>{recipe.title}</Text>
-  <View style={styles.sectionContainer}>
-    <Text style={styles.sectionTitle}>Content</Text>
-    <Text style={styles.contentText}>{recipe.description}</Text>
-  </View>
+          <Text style={styles.recipeTitle}>{recipe.title}</Text>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Content</Text>
+            <Text style={styles.contentText}>{recipe.description}</Text>
+          </View>
         </View>
+  
       </ScrollView>
     );
   }
@@ -147,4 +153,3 @@ import {
       color: "#4B5563",
     },
   });
-  
